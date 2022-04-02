@@ -1,10 +1,14 @@
 #ifndef __FFXIVSNIFFER_H__
 #define __FFXIVSNIFFER_H__
 
+#ifdef __LINUX__
 #include <netinet/ether.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
 #include <netinet/udp.h>
+#elseif __APPLE__
+#include <netinet/if_ether.h>
+#endif
 #include <pcap.h>
 #include <pcap/pcap.h>
 #include <string.h>

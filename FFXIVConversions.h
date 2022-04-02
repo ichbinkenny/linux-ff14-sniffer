@@ -25,7 +25,7 @@ unsigned int U32FromBytesLE(const unsigned char *data,
   int i;
   unsigned int u32_val = 0;
   for (i = 0; i < num_bytes; i++) {
-    u32_val |= data[0] << (i * 8);
+    u32_val |= data[i] << (i * 8);
   }
   return u32_val;
 }
@@ -37,7 +37,7 @@ unsigned int U32FromBytesLE(const unsigned char *data,
  **/
 unsigned long U64FromBytesLE(const unsigned char *data,
                              const unsigned char num_bytes) {
-  return U32FromBytesLE(&data[4], num_bytes - 4) << 8 |
+  return U32FromBytesLE(&data[4], num_bytes - 4) << 32 |
          U32FromBytesLE(&data[0], 4);
 }
 
