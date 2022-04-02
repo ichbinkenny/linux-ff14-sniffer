@@ -1,0 +1,16 @@
+* Sharlayan C tasks
+** DONE perform successful packet capture using libpcap [2/2]
+*** [X] pcap device open
+*** [X] pcap device packet retrieved
+
+** TODO Use pcap_loop and callbacks to get packets while performing other work.
+* FFXIV Sniffer Class tasks
+** TODO Create full struct [3/6]
+*** [ ] Add buffer for pcap messages that fills in a callback
+*** [X] Store pcap callback function for specific packet manipulation.
+*** [X] Abstract pcap initialization and sniffing start
+*** [X] Allow a field to specify specific device by name, use first one otherwise.
+*** [ ] Unit tests?
+*** [-] Add cqueue to hold packet data
+
+[[file:~/C Projects/pcap_interfacing/Makefile::gcc -o pcap_interfacing main.c -lpcap]]
