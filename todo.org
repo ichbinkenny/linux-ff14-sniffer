@@ -3,7 +3,7 @@
 *** [X] pcap device open
 *** [X] pcap device packet retrieved
 
-** TODO Use pcap_loop and callbacks to get packets while performing other work.
+** DONE Use pcap_loop and callbacks to get packets while performing other work.
 * FFXIV Sniffer Class tasks
 ** TODO Create full struct [4/5]
 *** [X] Add buffer for pcap messages that fills in a callback
@@ -12,8 +12,15 @@
 *** [X] Allow a field to specify specific device by name, use first one otherwise.
 *** [ ] Unit tests?
 
-* TODO Grab all Opcodes from packet and classify [0/2]
+* TODO Grab all Opcodes from packet and classify [1/2]
 ** [ ] grab complete set of Opcodes.
-** [ ] provide nice interface for classified packets.
+** [X] provide nice interface for classified packets.
 
-[[file:~/C Projects/linux-ff14-sniffer/Makefile::gcc -o pcap_interfacing main.c -lpcap]]
+* DONE Create subscriber interface that allows new subscriber objects to listen to specific events. [2/2]
+** [X] create subscriber class
+** [X] allow sniffer to populate fields alerting subscribers that want to know about a current packet
+*** I.E. if a subscriber wants to know about a movement event, anytime the sniffer detects a movements event should trigger the subscriber's code handler.
+
+* TODO write README.md to explain basic use of FFXIV sniffer with examples.
+* TODO make opcodes work with FFXIVEventCodes to allow a cleaner, and more understandable interface.
+[[file:~/C Projects/pcap_interfacing/Makefile::gcc -o pcap_interfacing main.c -lpcap]]

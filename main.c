@@ -1,43 +1,28 @@
 #include "FFXIVDataframe.h"
-#include "FFXIVPacket.h"
+#include "FFXIVEvent.h"
+#include "FFXIVEventSubscriber.h"
 #include "FFXIVSniffer.h"
-#include <arpa/inet.h>
-#include <net/ethernet.h>
-#include <netinet/if_ether.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
-#include <netinet/tcp.h>
-#include <pcap/pcap.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-struct FFXIVSniffer sniffer;
+struct FFXIVEventSubscriber movement_subscriber;
 
-void callback(unsigned char *args, const struct pcap_pkthdr *header,
-              const unsigned char *packet) {
-  // Packet contains ALL the data, including headers for each layer.
-  struct ether_header *eth_header = (struct ether_header *)packet;
+void movement_handler(const struct FFXIVDataframe *dataframe) {
+  printf("MOVEMENT DETECTED!!!\n");
+}
 
-  struct ip *ip_hdr = (struct ip *)(packet + sizeof(struct ether_header));
-  struct tcphdr *tcp_hdr =
-      (struct tcphdr *)(packet + sizeof(struct ether_header) +
-                        (ip_hdr->ip_hl * 4));
-  const unsigned char *payload = packet + sizeof(struct ether_header) +
-                                 (ip_hdr->ip_hl * 4) + (tcp_hdr->th_off * 4);
-
-  struct FFXIVPacket ffxiv_packet = FFXIVPacket_from_data(payload);
-  if (ffxiv_packet.is_valid_packet == FFXIV_PACKET_VALID) {
-    struct FFXIVDataframe ffxiv_dataframe =
-        createFFXIVDataframe(ffxiv_packet.data);
-    printf("FFXIV Action type: 0x%x\n",
-           ffxiv_dataframe.dataframe_header.action);
-  }
+void setup_movement_sub() {
+  movement_subscriber.name = "Movement Subscriber";
+  FFXIVEventSubscriber_subscribe(&movement_subscriber, 0x169, movement_handler);
 }
 
 int main(void) {
-  sniffer.callback = &callback;
   // try to start sniffer with no specs
-  printf("Starting ffxiv sniffer status: %d\n", FFXIVSniffer_start(&sniffer));
-  printf("Pcap is using interface: %s\n", sniffer.sniffing_interface->name);
+  setup_movement_sub();
+  FFXIVSniffer_add_subscriber(&ffxiv_sniffer, &movement_subscriber);
+  printf("Starting ffxiv sniffer status: %d\n",
+         FFXIVSniffer_start(&ffxiv_sniffer));
+  printf("Pcap is using interface: %s\n",
+         ffxiv_sniffer.sniffing_interface->name);
   return EXIT_SUCCESS;
 }
