@@ -3,7 +3,7 @@
 
 enum FFXIVActions {
   UNKNOWN = -1,
-  MOVEMENT = 0x169,
+  FFXIV_ACTION_MOVEMENT = 0x169,
 };
 
 #endif

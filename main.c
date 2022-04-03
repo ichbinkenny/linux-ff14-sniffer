@@ -1,3 +1,4 @@
+#include "FFXIVActions.h"
 #include "FFXIVDataframe.h"
 #include "FFXIVEvent.h"
 #include "FFXIVEventSubscriber.h"
@@ -13,7 +14,8 @@ void movement_handler(const struct FFXIVDataframe *dataframe) {
 
 void setup_movement_sub() {
   movement_subscriber.name = "Movement Subscriber";
-  FFXIVEventSubscriber_subscribe(&movement_subscriber, 0x169, movement_handler);
+  FFXIVEventSubscriber_subscribe(&movement_subscriber, FFXIV_ACTION_MOVEMENT,
+                                 movement_handler);
 }
 
 int main(void) {
