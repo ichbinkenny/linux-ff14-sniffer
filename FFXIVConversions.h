@@ -34,10 +34,11 @@ unsigned int U32FromBytesLE(const unsigned char *data,
  * Converts a char array of LE bytes to a uint64 (unsigned long)
  * WARNING: this function expects 8 bytes. Behavior for any other
  * number of bytes is undefined!
+ * NOTE: this function is currently borked! :(
  **/
 unsigned long U64FromBytesLE(const unsigned char *data,
                              const unsigned char num_bytes) {
-  return U32FromBytesLE(&data[4], num_bytes - 4) << 32 |
+  return U32FromBytesLE(&data[4], num_bytes - 4) << 8 |
          U32FromBytesLE(&data[0], 4);
 }
 

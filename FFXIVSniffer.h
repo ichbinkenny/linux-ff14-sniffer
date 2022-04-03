@@ -14,7 +14,7 @@
 #include <string.h>
 
 #define MAX_SNIFFER_BUFFER_SIZE 1024
-#define FFXIV_SNIFFER_TIMEOUT -1
+#define FFXIV_SNIFFER_TIMEOUT 0
 
 const char *FFXIV_FILTERS = "host 204.2.229.0/24";
 

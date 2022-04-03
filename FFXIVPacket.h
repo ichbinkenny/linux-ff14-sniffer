@@ -44,7 +44,6 @@ const unsigned char FFXIVPacket_validate(const unsigned char *packet_data) {
 }
 
 const char *FFXIVPacket_get_server_name(const uint32_t server_address) {
-
   return FFXIVWorld_get_name_from_IP(server_address);
 }
 

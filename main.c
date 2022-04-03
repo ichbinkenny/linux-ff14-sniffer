@@ -2,28 +2,14 @@
 #include "FFXIVPacket.h"
 #include "FFXIVSniffer.h"
 #include <arpa/inet.h>
-#ifdef __LINUX__
-#include <linux/if_ether.h>
-#endif
-#ifdef __APPLE__
-#include <netinet/if_ether.h>
-#include <netinet/ip.h>
-#include <netinet/tcp.h>
-#endif
 #include <net/ethernet.h>
+#include <netinet/if_ether.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
 #include <pcap/pcap.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#ifdef __LINUX__
-#define IPHDR_SIZE sizeof(struct iphdr)
-#endif
-#ifdef __APPLE__
-#define IPHDR_SIZE sizeof(struct ip)
-#endif
 
 struct FFXIVSniffer sniffer;
 
@@ -32,25 +18,12 @@ void callback(unsigned char *args, const struct pcap_pkthdr *header,
   // Packet contains ALL the data, including headers for each layer.
   struct ether_header *eth_header = (struct ether_header *)packet;
 
-#ifdef __LINUX__
-  struct iphdr *ip_hdr = (struct iphdr *)(packet + sizeof(struct ether_header));
+  struct ip *ip_hdr = (struct ip *)(packet + sizeof(struct ether_header));
   struct tcphdr *tcp_hdr =
       (struct tcphdr *)(packet + sizeof(struct ether_header) +
-                        IPHDR_SIZE);
+                        sizeof(struct ip));
   const unsigned char *payload = packet + sizeof(struct ether_header) +
-    (ip_hdr->ihl * 4) + (tcp_hdr->doff * 4);
-#endif
-
-/* #ifdef __APPLE__ */
-/*   struct ip* ip_hdr = (struct ip*)(packet + sizeof(struct ip)); */
-/*   struct tcp* tcp_hdr = (struct tcp*)(packet + sizeof(struct ether_header) + IPHDR_SIZE); */
-/*   const unsigned char* payload = packet + sizeof(struct ether_header) + (ip_hdr->len * 4) + (tcp_hdr->th_off * 4); */
-/* #endif */
-
-#ifdef __APPLE__
-const unsigned char* payload = packet;
-#endif
-
+                                 (ip_hdr->ip_len * 4) + (tcp_hdr->th_off * 4);
 
   struct FFXIVPacket ffxiv_packet = FFXIVPacket_from_data(payload);
   if (ffxiv_packet.is_valid_packet == FFXIV_PACKET_VALID) {
