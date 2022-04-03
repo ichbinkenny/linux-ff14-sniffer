@@ -21,9 +21,9 @@ void callback(unsigned char *args, const struct pcap_pkthdr *header,
   struct ip *ip_hdr = (struct ip *)(packet + sizeof(struct ether_header));
   struct tcphdr *tcp_hdr =
       (struct tcphdr *)(packet + sizeof(struct ether_header) +
-                        sizeof(struct ip));
+                        (ip_hdr->ip_hl * 4));
   const unsigned char *payload = packet + sizeof(struct ether_header) +
-                                 (ip_hdr->ip_len * 4) + (tcp_hdr->th_off * 4);
+                                 (ip_hdr->ip_hl * 4) + (tcp_hdr->th_off * 4);
 
   struct FFXIVPacket ffxiv_packet = FFXIVPacket_from_data(payload);
   if (ffxiv_packet.is_valid_packet == FFXIV_PACKET_VALID) {
