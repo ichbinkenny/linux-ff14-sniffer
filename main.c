@@ -3,6 +3,7 @@
 #include "FFXIVEvent.h"
 #include "FFXIVEventSubscriber.h"
 #include "FFXIVSniffer.h"
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -18,7 +19,15 @@ void setup_movement_sub() {
                                  movement_handler);
 }
 
+void interrupt_handler(int signal_code) {
+  printf("Killing ffxiv sniffer...\n");
+  FFXIVSniffer_stop(&ffxiv_sniffer);
+  exit(0);
+}
+
 int main(void) {
+  // handle ctrl-c event to clean up
+  signal(SIGINT, interrupt_handler);
   // try to start sniffer with no specs
   setup_movement_sub();
   FFXIVSniffer_add_subscriber(&ffxiv_sniffer, &movement_subscriber);
