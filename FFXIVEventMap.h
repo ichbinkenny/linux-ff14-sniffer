@@ -19,6 +19,10 @@ struct FFXIVEventMap {
   unsigned int num_entries[MAX_FFXIV_EVENT_COUNT];
 };
 
+/***
+ * Call all subscriber events registered to the provided event code.
+ * NOTE: this funciton also calls all events registered to receive ANY event.
+ **/
 void FFXIVEventMap_call_events(const struct FFXIVEventMap *event_map,
                                const unsigned int event_code,
                                const struct FFXIVDataframe *dataframe) {
@@ -30,6 +34,9 @@ void FFXIVEventMap_call_events(const struct FFXIVEventMap *event_map,
   }
 }
 
+/***
+ * Add event to specified event map.
+ **/
 void FFXIVEventMap_insert(struct FFXIVEventMap *event_map,
                           const unsigned int event_code,
                           const ffxiv_event_handler_t event_handler) {
@@ -40,6 +47,8 @@ void FFXIVEventMap_insert(struct FFXIVEventMap *event_map,
   }
   int status =
       FFXIVEventList_add_event(event_map->values[event_code], event_handler);
+  printf("Adding event %d to event list was %s\n", event_code,
+         (status == 0 ? "successful!" : "unsuccessful D:"));
 }
 
 #endif

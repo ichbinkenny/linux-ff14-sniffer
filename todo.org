@@ -16,8 +16,9 @@
 ** [ ] grab complete set of Opcodes.
 ** [X] provide nice interface for classified packets.
 
-* DONE Create subscriber interface that allows new subscriber objects to listen to specific events. [2/2]
+* DONE Create subscriber interface that allows new subscriber objects to listen to specific events. [3/3]
 ** [X] create subscriber class
+** [X] Create subscriber example for a universal event
 ** [X] allow sniffer to populate fields alerting subscribers that want to know about a current packet
 *** I.E. if a subscriber wants to know about a movement event, anytime the sniffer detects a movements event should trigger the subscriber's code handler.
 

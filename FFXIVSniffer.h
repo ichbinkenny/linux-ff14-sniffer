@@ -73,7 +73,6 @@ void callback(unsigned char *args, const struct pcap_pkthdr *header,
       FFXIVEventSubscriber_call(ffxiv_sniffer.subscribers[i],
                                 dataframe.dataframe_header.action, &dataframe);
     }
-    // TODO alert subscribers belonging to action type
   }
 }
 
@@ -108,9 +107,11 @@ int FFXIVSniffer_start(struct FFXIVSniffer *sniffer) {
                      sniffer->ip_addr);
         pcap_setfilter(sniffer->live_device, &sniffer->bpf_prog);
         if (sniffer->callback != NULL) {
-          pcap_loop(sniffer->live_device, -1, sniffer->callback, NULL);
+          pcap_loop(sniffer->live_device, FFXIV_SNIFFER_TIMEOUT,
+                    sniffer->callback, NULL);
         } else {
-          pcap_loop(sniffer->live_device, -1, &callback, NULL);
+          pcap_loop(sniffer->live_device, FFXIV_SNIFFER_TIMEOUT, &callback,
+                    NULL);
         }
       }
     }

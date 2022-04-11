@@ -21,6 +21,8 @@ void FFXIVEventSubscriber_subscribe(struct FFXIVEventSubscriber *subscriber,
 void FFXIVEventSubscriber_call(const struct FFXIVEventSubscriber *subscriber,
                                const unsigned int event_code,
                                const struct FFXIVDataframe *payload) {
+  // Call events registered to ANY action first.
+  FFXIVEventMap_call_events(&subscriber->events, FFXIV_EVENT_ANY, payload);
   FFXIVEventMap_call_events(&subscriber->events, event_code, payload);
 }
 
