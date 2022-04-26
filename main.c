@@ -8,7 +8,9 @@
 #include <stdlib.h>
 
 struct FFXIVEventSubscriber movement_subscriber;
-struct FFXIVEventSubscriber unknown_classifier;
+struct FFXIVEventSubscriber unhandled_code_classifier;
+
+uint8_t alerted_codes[65535] = {};
 
 void movement_handler(const struct FFXIVDataframe *dataframe) {
   printf("MOVEMENT DETECTED!!!\n");
@@ -17,7 +19,10 @@ void movement_handler(const struct FFXIVDataframe *dataframe) {
 void unknown_classifier_handler(const struct FFXIVDataframe *dataframe) {
   // This classifier handles packets with information not specified that are
   // zone types.
-  printf("Segment type: %d\n", dataframe->segment_type);
+  if (alerted_codes[dataframe->dataframe_header.action] == 0) {
+	printf("Unknown code: 0x%x\n", dataframe->dataframe_header.action);
+	alerted_codes[dataframe->dataframe_header.action] = 1;
+  }
   if (dataframe->segment_type == FFXIV_SEGMENT_TYPE_ZONE) {
     printf("packet actor id: 0x%x\n", dataframe->actor_id);
     printf("packet target id: 0x%x\n", dataframe->target_id);
@@ -31,8 +36,8 @@ void setup_movement_sub() {
 }
 
 void setup_default_subscriber() {
-  unknown_classifier.name = "Default Subscriber";
-  FFXIVEventSubscriber_subscribe(&unknown_classifier, FFXIV_ACTION_ANY,
+  unhandled_code_classifier.name = "Default Subscriber";
+  FFXIVEventSubscriber_subscribe(&unhandled_code_classifier, FFXIV_ACTION_ANY,
                                  unknown_classifier_handler);
 }
 
@@ -49,7 +54,7 @@ int main(void) {
   setup_movement_sub();
   setup_default_subscriber();
   FFXIVSniffer_add_subscriber(&ffxiv_sniffer, &movement_subscriber);
-  FFXIVSniffer_add_subscriber(&ffxiv_sniffer, &unknown_classifier);
+  FFXIVSniffer_add_subscriber(&ffxiv_sniffer, &unhandled_code_classifier);
   printf("Starting ffxiv sniffer status: %d\n",
          FFXIVSniffer_start(&ffxiv_sniffer));
   printf("Pcap is using interface: %s\n",
